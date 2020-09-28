@@ -1,0 +1,14 @@
+#!/usr/bin/env ash
+mc alias set minio http://%(service_name)s %(storage_account)s "${MINIO_SECRET_KEY}"
+
+echo "Setting Up Policies"
+for policy in /etc/minio/userSetup/policies; do
+    echo "Setting Up Policy ${policy}"
+    mc admin policy add minio "${policy}" "$(cat "${policy}")"
+done
+
+echo "Setting Up Users"
+for user in /etc/minio/userSetup/keys; do
+    echo "Setting Up Account ${user}"
+    mc admin user add minio "${user}" "$(cat "${user}")" 
+done
